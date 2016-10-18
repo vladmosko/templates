@@ -1,3 +1,7 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
 // baby-step-giant-step for solving (a^x) = b (mod m)
 // complexity is O(sqrt(m) * logm)
 template<typename T> T solve(T a, T b, T m) {
@@ -6,7 +10,7 @@ template<typename T> T solve(T a, T b, T m) {
     for (int i = 0; i < n; i++) {
         pw = (T)a * pw % m;
     }
-    if (m <= 1000000) { // when should we create an array, and when a map? Don't forget about hash-table if speed sucks
+    if (m <= 1000000) { // when should we create an array, and when a map?
         vector<T> values(m, -1);
         for (T i = 1, cur = pw; i <= n; i++) {
             if (values[cur] == -1) {
@@ -27,13 +31,13 @@ template<typename T> T solve(T a, T b, T m) {
     } else {
         map<T, T> values;
         for (T i = 1, cur = pw; i <= n; i++) {
-            if (values[cur] == -1) {
+            if (!values.count(cur)) {
                 values[cur] = i;
             }
             cur = (T)cur * pw % m;
         }
         for (T i = 0, cur = b; i <= n; i++) {
-            if (values[cur] != -1) {
+            if (values.count(cur)) {
                 T candidate = values[cur] * n - i;
                 if (candidate < m) {
                     return candidate;
@@ -43,4 +47,8 @@ template<typename T> T solve(T a, T b, T m) {
         }
         return -1;
     }
+}
+
+int main() {
+	return 0;
 }
