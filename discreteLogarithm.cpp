@@ -1,7 +1,3 @@
-#include <bits/stdc++.h>
-
-using namespace std;
-
 // baby-step-giant-step for solving (a^x) = b (mod m)
 // complexity is O(sqrt(m) * logm)
 template<typename T> T solve(T a, T b, T m) {
@@ -47,8 +43,4 @@ template<typename T> T solve(T a, T b, T m) {
         }
         return -1;
     }
-}
-
-int main() {
-	return 0;
 }
