@@ -1,3 +1,5 @@
+// NOT TESTED YET
+
 template<typename T, typename Q> T binaryPower(T a, Q n) {
     assert(n >= 0);
     T res = 1;
