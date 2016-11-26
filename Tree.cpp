@@ -12,7 +12,7 @@ struct Tree {
 
 		}
 
-		Edge(int toValue): to(toValue), weight(0) {
+		Edge(int toValue): to(toValue), weight(1) {
 
 		}
 
@@ -26,6 +26,7 @@ struct Tree {
 	vector<long long> depth;
 	vector<int> timeIn;
 	vector<int> timeOut;
+	vector<int> unweighedDepth;
 	vector<int> eulerOrdering;
 	vector<int> positionInEulerOrdering;
 	vector<int> subtreeSize;
@@ -85,11 +86,12 @@ struct Tree {
 		edgeToParentIsHeavy.resize(static_cast<unsigned int>(n) + 2);
 	}
 
-	void dfs(int currentVertex, int parentVertex, long long currentDepth) {
+	void dfs(int currentVertex, int parentVertex, long long currentDepth, int currentUnweighedDepth) {
 		eulerOrdering.emplace_back(currentVertex);
 		positionInEulerOrdering[currentVertex] = static_cast<int>(eulerOrdering.size()) - 1;
 		timeIn[currentVertex] = ++timer;
 		depth[currentVertex] = currentDepth;
+		unweighedDepth[currentVertex] = currentUnweighedDepth;
 		subtreeSize[currentVertex] = 1;
 		verticesSortedByDepth.emplace_back(currentVertex);
 		binaryJump[0][currentVertex] = parentVertex;
@@ -100,7 +102,7 @@ struct Tree {
 			if (edge.to == parentVertex) {
 				continue;
 			}
-			dfs(edge.to, currentVertex, currentDepth + edge.weight);
+			dfs(edge.to, currentVertex, currentDepth + edge.weight, currentUnweighedDepth + 1);
 			subtreeSize[currentVertex] += subtreeSize[edge.to];
 		}
 		for (auto edge : edges[currentVertex]) {
@@ -116,7 +118,53 @@ struct Tree {
 
 	void gatherInformation() {
 		timer = 0;
-		dfs(root, root, 0);
+		dfs(root, root, 0, 0);
+	}
+
+	inline bool isAncestor(int u, int v) {
+		return timeIn[u] <= timeIn[v] && timeOut[u] >= timeOut[v];
+	}
+
+	int LCA(int u, int v) {
+		if (isAncestor(u, v)) {
+			return u;
+		}
+		if (isAncestor(v, u)) {
+			return v;
+		}
+		for (int i = LOG_N - 1; i >= 0; i--) {
+			if (!isAncestor(binaryJump[i][u], v)) {
+				u = binaryJump[i][u];
+			}
+		}
+		return binaryJump[0][u];
+	}
+
+	inline long long distanceBetween(int u, int v) {
+		return depth[u] + depth[v] - 2 * depth[LCA(u, v)];
+	}
+
+	inline int unweighedDistanceBetween(int u, int v) {
+		return unweighedDepth[u] + unweighedDepth[v] - 2 * unweighedDepth[LCA(u, v)];
+	}
+
+	inline int travelUp(int u, int dist) {
+		for (int i = 0; i < LOG_N; i++) {
+			if (dist >> i & 1) {
+				u = binaryJump[i][u];
+			}
+		}
+		return u;
+	}
+
+	inline int journeyPoint(int u, int v, int k) {
+		int middle = LCA(u, v);
+		int firstPart = unweighedDistanceBetween(middle, u) + 1;
+		if (k <= firstPart) {
+			return travelUp(u, k - 1);
+		} else {
+			return travelUp(v, unweighedDistanceBetween(middle, v) - 1 - (k - firstPart));
+		}
 	}
 
 	vector<int> inWhichChain;
