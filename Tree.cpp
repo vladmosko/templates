@@ -1,5 +1,44 @@
-// NOT TESTED YET
-
+/*
+ * TREE DOCUMENTATION
+ * NOTE: NOT TESTED PROPERLY YET
+ *
+ * This structure will help you to easily gather information about a tree.
+ *
+ * INITIALIZATION
+ * There are two ways to initialize it:
+ * 1) (recommended) Call provideParsedEdgeData(vector<vector<Edge>> &providedEdges)
+ * 	  Size of vector providedEdges should be equal to number of vertices,
+ * 	  and i-th element of it should be a vector of Tree::Edge, describing edges, outgoing from
+ * 	  vertex i.
+ * 2) Call readData(bool oriented, bool weighed, bool alreadyZeroIndexed)
+ * 	  This method will first read the number of vertices, then
+ * 	  n-1 lines, containing the description of edges of the tree.
+ * NOTE: by default, root is set to 0, you can change it manually.
+ *
+ * GETTING INFORMATION
+ * To gather all the needed information, call gatherInformation().
+ * This function is a bit slow because it calculates really many things you will
+ * be able to use in future.
+ *
+ * FUNCTIONS TO USE
+ * isAncestor(u, v) - returns true if u is ancestor of v
+ * LCA(u, v) - returns LCA of u and v
+ * distanceBetween(u, v) - returns distance between u and v
+ * unweighedDistanceBetween(u, v) - returns distance between u and v treating each edge weight as 1
+ * travelUp(v, dist) - which vertex will we get to if we go to parent dist times, starting from v
+ * journeyPoint(u, v, k) - k-th vertex on path from u to v
+ * decomposeToChains() - returns vector<vector<int>>, describing chains built using HLD
+ *
+ * VALUES TO USE
+ * vector<vector<Edge>> edges - edges of the tree
+ * depth[x] - distance from x to root
+ * timeIn[x] and timeOut[x]
+ * unweighedDepth[x] - distance from x to root treating each edge weight as 1
+ * vector<int> eulerOrdering
+ * positionInEulerOrdering[x]
+ * subtreeSize[x]
+ * binaryJump[level][x] - basically equivalent to travelUp(x, 2^level)
+ */
 struct Tree {
 
 	int LOG_N = 20;
